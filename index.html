@@ -669,11 +669,19 @@
         // UPDATE STATS
         // =============================================
         function updateStats() {
+            // Total DPT dari database
             document.getElementById('totalDPT').textContent = dptData.length.toLocaleString();
-            document.getElementById('totalInput').textContent = dukunganData.length.toLocaleString();
-            document.getElementById('totalMendukung').textContent = dukunganData.filter(d => d.status === 'Mendukung').length.toLocaleString();
-            document.getElementById('totalRagu').textContent = dukunganData.filter(d => d.status === 'Ragu-Ragu').length.toLocaleString();
-            document.getElementById('totalLain').textContent = dukunganData.filter(d => d.status === 'Ada Pilihan Lain').length.toLocaleString();
+            
+            // Hitung berdasarkan jumlah_anggota (semua anggota keluarga)
+            const totalInput = dukunganData.reduce((sum, d) => sum + (d.jumlah_anggota || 1), 0);
+            const totalMendukung = dukunganData.filter(d => d.status === 'Mendukung').reduce((sum, d) => sum + (d.jumlah_anggota || 1), 0);
+            const totalRagu = dukunganData.filter(d => d.status === 'Ragu-Ragu').reduce((sum, d) => sum + (d.jumlah_anggota || 1), 0);
+            const totalLain = dukunganData.filter(d => d.status === 'Ada Pilihan Lain').reduce((sum, d) => sum + (d.jumlah_anggota || 1), 0);
+            
+            document.getElementById('totalInput').textContent = totalInput.toLocaleString();
+            document.getElementById('totalMendukung').textContent = totalMendukung.toLocaleString();
+            document.getElementById('totalRagu').textContent = totalRagu.toLocaleString();
+            document.getElementById('totalLain').textContent = totalLain.toLocaleString();
         }
 
         // =============================================
@@ -843,6 +851,10 @@
             }
 
             const familyMembers = dptData.filter(d => d.no_kk === selectedPerson.no_kk);
+            
+            // Debug log
+            console.log('Selected Person:', selectedPerson);
+            console.log('Family Members Found:', familyMembers.length, familyMembers.map(m => m.nama));
 
             const data = {
                 nama_dusun: selectedPerson.dusun,
@@ -854,6 +866,8 @@
                 status: status,
                 program_kerja: programKerja
             };
+            
+            console.log('Data to Submit:', data);
 
             try {
                 document.getElementById('btnSubmit').disabled = true;
