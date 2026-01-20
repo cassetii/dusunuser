@@ -590,10 +590,11 @@
             try {
                 showLoading('tableContainer', 'Memuat data...');
                 
-                // Load DPT
+                // Load DPT (tambah range untuk ambil semua data > 1000)
                 const { data: dpt, error: dptError } = await db
                     .from('dpt')
                     .select('*')
+                    .range(0, 1999)
                     .order('nama');
                 
                 if (dptError) throw dptError;
@@ -602,7 +603,8 @@
                 // Load Dukungan
                 const { data: dukungan, error: dukunganError } = await db
                     .from('dukungan')
-                    .select('*');
+                    .select('*')
+                    .range(0, 9999);
                 
                 if (dukunganError) throw dukunganError;
                 dukunganData = dukungan || [];
