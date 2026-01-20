@@ -590,15 +590,31 @@
             try {
                 showLoading('tableContainer', 'Memuat data...');
                 
-                // Load DPT (tambah range untuk ambil semua data > 1000)
-                const { data: dpt, error: dptError } = await db
-                    .from('dpt')
-                    .select('*')
-                    .range(0, 1999)
-                    .order('nama');
+                // Load ALL DPT dengan pagination
+                dptData = [];
+                let page = 0;
+                const pageSize = 1000;
+                let hasMore = true;
                 
-                if (dptError) throw dptError;
-                dptData = dpt || [];
+                while (hasMore) {
+                    const { data: dpt, error: dptError } = await db
+                        .from('dpt')
+                        .select('*')
+                        .range(page * pageSize, (page + 1) * pageSize - 1)
+                        .order('nama');
+                    
+                    if (dptError) throw dptError;
+                    
+                    if (dpt && dpt.length > 0) {
+                        dptData = dptData.concat(dpt);
+                        page++;
+                        if (dpt.length < pageSize) hasMore = false;
+                    } else {
+                        hasMore = false;
+                    }
+                }
+                
+                console.log('Total DPT loaded:', dptData.length);
 
                 // Load Dukungan
                 const { data: dukungan, error: dukunganError } = await db
