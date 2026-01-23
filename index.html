@@ -709,10 +709,20 @@
             currentDusun = dusun;
 
             const filtered = dptData.filter(d => d.dusun === dusun);
+            
+            // Ambil hanya 1 orang per KK (ID terkecil = Kepala Keluarga)
+            const kepalaKeluargaMap = {};
+            filtered.forEach(person => {
+                if (!kepalaKeluargaMap[person.no_kk] || person.id < kepalaKeluargaMap[person.no_kk].id) {
+                    kepalaKeluargaMap[person.no_kk] = person;
+                }
+            });
+            const kepalaKeluargaList = Object.values(kepalaKeluargaMap);
+            
             const searchTerm = searchInput.value.toLowerCase();
             const searched = searchTerm 
-                ? filtered.filter(d => d.nama.toLowerCase().includes(searchTerm))
-                : filtered;
+                ? kepalaKeluargaList.filter(d => d.nama.toLowerCase().includes(searchTerm))
+                : kepalaKeluargaList;
 
             if (searched.length === 0) {
                 container.innerHTML = `
