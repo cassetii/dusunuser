@@ -657,11 +657,10 @@
             
             select.innerHTML = '<option value="">-- Pilih Dusun --</option>';
             dusuns.forEach(dusun => {
-                // Hitung jumlah KK unik per dusun
-                const kkUnik = [...new Set(dptData.filter(d => d.dusun === dusun).map(d => d.no_kk))].length;
+                const count = dptData.filter(d => d.dusun === dusun).length;
                 const option = document.createElement('option');
                 option.value = dusun;
-                option.textContent = `${dusun} (${kkUnik} KK)`;
+                option.textContent = `${dusun} (${count} KK)`;
                 select.appendChild(option);
             });
         }
