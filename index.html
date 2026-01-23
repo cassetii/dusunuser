@@ -657,10 +657,12 @@
             
             select.innerHTML = '<option value="">-- Pilih Dusun --</option>';
             dusuns.forEach(dusun => {
-                const count = dptData.filter(d => d.dusun === dusun).length;
+                const wargaDusun = dptData.filter(d => d.dusun === dusun);
+                const jumlahOrang = wargaDusun.length;
+                const jumlahKK = [...new Set(wargaDusun.map(d => d.no_kk))].length;
                 const option = document.createElement('option');
                 option.value = dusun;
-                option.textContent = `${dusun} (${count} KK)`;
+                option.textContent = `${dusun} (${jumlahKK} KK / ${jumlahOrang} jiwa)`;
                 select.appendChild(option);
             });
         }
