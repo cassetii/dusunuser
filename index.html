@@ -649,7 +649,7 @@
         }
 
         // =============================================
-        // POPULATE DUSUN DROPDOWN
+        // POPULATE DUSUN DROPDOWN - UPDATED: Menampilkan jumlah KK
         // =============================================
         function populateDusunDropdown() {
             const dusuns = [...new Set(dptData.map(d => d.dusun))].sort();
@@ -657,10 +657,11 @@
             
             select.innerHTML = '<option value="">-- Pilih Dusun --</option>';
             dusuns.forEach(dusun => {
-                const count = dptData.filter(d => d.dusun === dusun).length;
+                // Hitung jumlah KK unik per dusun
+                const kkUnik = [...new Set(dptData.filter(d => d.dusun === dusun).map(d => d.no_kk))].length;
                 const option = document.createElement('option');
                 option.value = dusun;
-                option.textContent = `${dusun} (${count} orang)`;
+                option.textContent = `${dusun} (${kkUnik} KK)`;
                 select.appendChild(option);
             });
         }
